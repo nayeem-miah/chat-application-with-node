@@ -3,9 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
+
 // internal import
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
+const { notFoundHandler,errorHandler } = require("./middlewares/common/errorHandler");
+
 
 dotenv.config();
 const app = express();
@@ -22,16 +25,20 @@ connectDB()
 app.set("view engine", "ejs");
 
 // set static folder
-app.use(express.static(path.join(__dirname, "public")))
- 
+app.use(express.static(path.join(__dirname, "public")));
+
 // parse cookie
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routing setup
 
-// error handling 
+// 404 error handler
+app.use(notFoundHandler);
+
+// common error handler
+app.use(errorHandler);
 
 
 app.listen(process.env.PORT, () => {
-    console.log(`connection string is http://localhost:${PORT}`);
+    console.log(`app listing port  is http://localhost:${PORT}`);
 })
